@@ -110,7 +110,7 @@ The container is customized via `docker-compose.override.yml`:
 - SSH keys: `~/.ssh` mounted read-only (for git operations)
 - gh auth: `~/.config/gh` volume persisted
 - Claude auth: `claude-auth` volume + `CLAUDE.md` and `settings.json` bind-mounted
-- Port mapping: `13000-13999 -> 3000-3999` (workspace dev servers)
+- Port mapping: `7001` for the ff UI; workspace dev servers get next available ports
 - `NODE_ENV=development` is always set for workspace child processes
 
 ## Key Source Locations
@@ -157,7 +157,7 @@ This section documents the full operational workflow for using Claude Code as PM
 ## Creating Workspaces — Operational Guide
 
 ### UI Navigation
-- **CRITICAL**: ff only loads from the root route (`localhost:13000`). Navigating directly to `/projects/...` returns a blank page. Always start from `localhost:13000` and let it redirect.
+- **CRITICAL**: ff only loads from the root route (`localhost:7001`). Navigating directly to `/projects/...` returns a blank page. Always start from `localhost:7001` and let it redirect.
 - **Port assignment**: ff maps container ports 3000-3999 to host ports 13000-13999. The ff UI itself runs on `13000`. Each workspace dev server gets the next available port (13001, 13002, …) as they spin up.
 - The board view shows columns: Todo-GitHub | Working | Waiting | Done
 - Click "+ New Workspace" in the Todo column to open the creation dialog
@@ -335,7 +335,7 @@ git pull origin main
 
 | Issue | Workaround |
 |-------|------------|
-| FF only loads from root route | Always navigate to `localhost:13000`, never direct to `/projects/...` |
+| FF only loads from root route | Always navigate to `localhost:7001`, never direct to `/projects/...` |
 | Chrome extension disconnects during long `wait` operations | Reconnect via `tabs_context_mcp`, retry the same action |
 | Agents need git identity config in new worktrees | Click "Allow" when agent runs `git config user.email/name` |
 | "Permission Needed" badges persist after merge | Visit workspace, click Ratchet tab, approve pending permissions |

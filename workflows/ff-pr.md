@@ -25,7 +25,7 @@ Triggers PR creation via the FF dashboard "Quick actions" button. Assumes review
    ```
    The issue should have `ff:pr`. If it still has `ff:review` or `ff:validate`, run `/ff:review` first.
 
-2. Navigate to the workspace in the FF dashboard (`localhost:13000`)
+2. Navigate to the workspace in the FF dashboard (`localhost:7001`)
 
 3. Trigger PR creation:
    - Click the "Quick actions" button in the **chat input toolbar** (bottom bar)

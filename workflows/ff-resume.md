@@ -46,7 +46,7 @@ Finds the in-progress workspace and continues the pipeline from where it left of
    gh issue edit <N> --remove-label "ff:paused"
    ```
 
-6. Create a new session in the existing ff workspace (navigate to it via `localhost:13000`) with a resume prompt:
+6. Create a new session in the existing ff workspace (navigate to it via `localhost:7001`) with a resume prompt:
 
 ```
 Resume pipeline for: <feature name>. Issue: #<N>.

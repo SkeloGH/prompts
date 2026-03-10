@@ -42,18 +42,26 @@ This survives workspace archival and is visible to the whole team without naviga
    Labels to create (do all at once if starting fresh):
    `ff:spec`, `ff:implement`, `ff:review`, `ff:validate`, `ff:pr`, `ff:done`
 
-3. Create the ff workspace using `compound-engineering:agent-browser`:
-   - Navigate to `localhost:13000` (the ff board — always use the root route, never a direct `/projects/...` URL)
+3. Create the ff workspace:
+   - Navigate to `localhost:7001` (the ff board — always use the root route, never a direct `/projects/...` URL)
    - Click **"+ New Workspace"** in the Todo column
    - Paste the prompt from the template below into the textarea
    - Select agent: **Claude**, workflow: **Default**
    - Click **"Launch"**
    - Wait for the workspace card to appear and status to leave PROVISIONING
 
-4. Monitor progress — the workspace agent posts GH comments at each stage transition and updates the issue label. Check issue state with:
+4. Monitor progress — check both workspace activity AND governance compliance:
    ```bash
-   gh issue view <N>
+   gh issue view <N> --json labels,comments
    ```
+   **Verify governance is happening:** The issue label should advance through `ff:spec` → `ff:implement` → `ff:review` → `ff:validate` → `ff:pr` → `ff:done`, and checkpoint comments should appear at each transition. If the agent reaches PR creation without updating labels or posting comments, it skipped governance — intervene by messaging the agent.
+
+5. **Orchestrator-side validation (after workspace agent reaches `ff:validate`):**
+   These steps require tools the workspace agent doesn't have access to:
+   - If the PR touches UI: run `compound-engineering:test-browser` to exercise the feature in the browser
+   - If the PR touches UI: run `compound-engineering:feature-video` to record a walkthrough and attach to the PR
+   - Optionally: use the **Review** Quick Action (top-right of workspace panel) for an additional review pass
+   - Post validation results as a PR comment if issues are found
 
 ## Workspace Prompt Template
 
