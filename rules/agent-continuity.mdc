@@ -1,0 +1,23 @@
+# Agent Continuity (Limited Context)
+
+When working on multi-step tasks that may span sessions or hit context limits, persist state so the next agent can resume.
+
+## Checkpoint Location
+
+`.cursor/workspace/` — write checkpoint files here. Naming: `x-workflow-<slug>.md` for X-Workflow, or `<task>-checkpoint.md` for other long-running work.
+
+## When to Checkpoint
+
+- Approaching context limit or ending a long session
+- After completing a significant step
+- Before handing off to another agent or human
+
+## Checkpoint Contents
+
+Include: current state, what's done, next 2–3 concrete actions, key decisions, paths to artifacts. Keep "next steps" specific so the next agent can act without re-explaining.
+
+## Resume
+
+For X-Workflow: run `/x-workflow.resume` or `/x-workflow.resume <slug>`. The agent reads the checkpoint first, then continues.
+
+For other tasks: attach the checkpoint file with `@` and ask to continue from the stated next steps.
