@@ -3,8 +3,9 @@ name: md-presentation
 description: >-
   Generate a didactic presentation as a Markdown document for epistemic
   priming on a topic, PR, feature, subsystem, or decision. Same approach as
-  /pdf-presentation but the output is a .md file with mermaid diagrams and
-  ASCII visuals instead of a rendered PDF — so it lives in a repo, renders in
+  /pdf-presentation — opening on a whole-system architecture diagram, then
+  zooming in — but the output is a .md file with mermaid diagrams and ASCII
+  visuals instead of a rendered PDF, so it lives in a repo, renders in
   GitHub / VS Code / Obsidian, and diffs cleanly. Use when the user says
   "/md-presentation", asks for a Markdown deck / slides, or wants priming
   material that belongs in version control.
@@ -26,17 +27,34 @@ informed of facts. Same intent as `/pdf-presentation`; different medium.
 
 The thinking is identical. Only the output format differs.
 
-## Five principles (shared with /pdf-presentation)
+## Doctrine (shared with /pdf-presentation)
 
-1. **Concept-dependency order.** Each slide uses only ideas already taught.
+CSS styling doesn't apply to Markdown, but the *didactic* doctrine does — the
+structure, leanness, and grounding are the same.
+
+1. **Overview-first structure.** After the title, **slide 2 is a whole-system
+   architecture diagram** — the map of the subject — *before* zooming into
+   parts. Render it as a top-to-bottom mermaid `flowchart TD` with subgraphs:
+   an entry/trigger node, upstream/already-shipped stages, the **deck's own
+   subject as the highlighted focus node** (give it a distinct
+   `style ... fill:` so it reads as the hero), and the downstream sink. Close
+   with one line stating the end-to-end invariant. Spotlight the subject;
+   everything else is context. This orients the reader and gives narrative
+   continuity across a series of related decks.
+2. **Concept-dependency order.** Each slide uses only ideas already taught.
    Outline the dependency graph, then walk it.
-2. **Selective, not exhaustive.** Teach; do not record. Cut the file-by-file
+3. **Selective, not exhaustive.** Teach; do not record. Cut the file-by-file
    dump; keep the diagram of the one tricky mechanism.
-3. **Visuals do the work.** Every non-trivial idea gets a mermaid diagram or
+4. **Lean — structure carries the idea; words only label.** A heading is an
+   **assertion** (a claim), not a label. Cut the framing sentence when the
+   heading + diagram already deliver the point. Tighten each `>` takeaway to a
+   **single punch** — one crisp insight, never a restatement of the heading.
+5. **Visuals do the work.** Every non-trivial idea gets a mermaid diagram or
    an ASCII figure — not a bare bullet list.
-4. **Ground every claim.** Never invent. `gh pr view`, read the code, verify
-   the numbers.
-5. **One idea per slide.** A heading states a *claim*, not a label.
+6. **Ground every claim.** Never invent. `gh pr view`, read the code, verify
+   the numbers. A priming deck that is confidently wrong is worse than none.
+7. **Clean up after yourself.** If you generate any scratch files while
+   building, delete them; the `.md` is the only deliverable.
 
 ## Document structure
 
@@ -66,8 +84,10 @@ One sentence framing the visual below.
 ## 02 · ...
 ```
 
-Keep it to 8–12 slides. Slide 1 is the title; the last is synthesis / what's
-next.
+Keep it to 8–12 slides. Slide 1 is the title; **slide 2 is the whole-system
+architecture overview** (a top-down mermaid `flowchart TD` with the deck's
+subject as a highlighted focus node — see `template.md`); the last is
+synthesis / what's next.
 
 ## Choosing the visual
 
@@ -111,11 +131,13 @@ two-column figure.
 
 1. **Gather & verify** the source material.
 2. **Outline** 8–12 slides in concept-dependency order; write each headline as
-   a one-sentence claim first.
+   a one-sentence claim first. Slide 1 is the title; **slide 2 is the
+   whole-system architecture overview**.
 3. **Pick a visual per slide** (mermaid or ASCII per the table above).
 4. **Write** the `.md` from `template.md`.
 5. **Sanity-check** the mermaid blocks — every node referenced is defined, no
-   stray characters; the file is valid Markdown.
+   stray characters; the file is valid Markdown. Confirm each takeaway is a
+   single punch, not a restatement of the heading.
 
 ## Output location
 

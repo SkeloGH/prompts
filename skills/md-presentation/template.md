@@ -5,9 +5,10 @@
   deliverable. mermaid blocks render live in GitHub / VS Code / Obsidian.
 
   • One "slide" per section, separated by a --- horizontal rule.
-  • 8–12 slides. Slide 1 is the title; the last is synthesis / next steps.
-  • Each slide: ## NN · label  →  ### claim-headline  →  framing sentence  →
-    visual (mermaid or ASCII)  →  > takeaway.
+  • 8–12 slides. Slide 1 is the title; SLIDE 2 is the whole-system
+    architecture overview (## 01 below); the last is synthesis / next steps.
+  • Each slide: ## NN · label  →  ### claim-headline  →  (optional framing
+    sentence)  →  visual (mermaid or ASCII)  →  > single-punch takeaway.
   • Delete the example slides you do not need; keep the structure.
 -->
 
@@ -19,12 +20,47 @@ One-line subtitle — what the reader will be able to *think* about afterward.
 
 ---
 
-## 01 · Section label
+## 01 · The whole system
+
+### Where this work sits — the map before the parts
+
+Slide 2 is always the overview: a top-down diagram of the whole subject, with
+THIS deck's piece highlighted as the focus node and everything else as quiet
+context. Show it first so the reader has a frame for every later slide.
+
+```mermaid
+flowchart TD
+    E([Entry · what triggers the system]) --> U
+
+    subgraph upstream [Upstream · already shipped]
+        U[Ingest<br/>source] --> T[Transform<br/>model-judged] --> G[Group<br/>deterministic]
+    end
+
+    G --> F
+
+    subgraph focus [This work · the load-bearing subsystem]
+        F[readInputs] --> C[compute<br/>the core work] --> Em[emit]
+    end
+
+    Em --> D[Downstream sink<br/>writes result.shape]
+
+    style focus fill:#3a0f08,stroke:#FF4018,color:#fff
+    style F fill:#5a1810,stroke:#FF4018,color:#fff
+    style C fill:#5a1810,stroke:#FF4018,color:#fff
+    style Em fill:#5a1810,stroke:#FF4018,color:#fff
+```
+
+> **Invariant:** the one cross-cutting property that must hold end to end.
+
+---
+
+## 02 · Section label
 
 ### A headline that states a claim, not a topic
 
-One sentence framing what the visual below shows. A pipeline reads as
-causation — use `flowchart LR` only when each node truly produces the next.
+A pipeline reads as causation — use `flowchart LR` only when each node truly
+produces the next. (Drop this framing line whenever the heading + diagram
+already land the point.)
 
 ```mermaid
 flowchart LR
@@ -37,7 +73,7 @@ flowchart LR
 
 ---
 
-## 02 · Resolution logic
+## 03 · Resolution logic
 
 ### Use a decision tree for precedence — first match wins
 
@@ -56,7 +92,7 @@ flowchart TD
 
 ---
 
-## 03 · Why this, not that
+## 04 · Why this, not that
 
 ### Use a table when the idea is "two things differ"
 
@@ -73,7 +109,7 @@ comparisons over ASCII columns.
 
 ---
 
-## 04 · The number that matters
+## 05 · The number that matters
 
 ### A gauge shows a value against a threshold
 
@@ -96,7 +132,7 @@ RESULT: 0.44 < 0.90  →  RED  (fails the gate — by design)
 
 ---
 
-## 05 · Ranked levels
+## 06 · Ranked levels
 
 ### ASCII boxes work for a tier ladder or hierarchy
 
@@ -117,7 +153,7 @@ When the idea is "ranked levels," a stacked figure reads faster than prose.
 
 ---
 
-## 06 · Annotated sequence
+## 07 · Annotated sequence
 
 ### A strip of cells works for pages, steps, or a timeline
 
@@ -135,7 +171,7 @@ v2   [■] [ ] [ ] [■] [ ] [ ] [■] [ ] [■]  …  [■]   ← marker only a
 
 ---
 
-## 07 · How the parts talk
+## 08 · How the parts talk
 
 ### A sequence diagram shows interaction over time
 
@@ -156,7 +192,7 @@ sequenceDiagram
 
 ---
 
-## 08 · Synthesis
+## 09 · Synthesis
 
 ### Close with what's next — or what the reader should do
 
