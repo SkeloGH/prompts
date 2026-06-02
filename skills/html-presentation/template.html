@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<!--
+  pdf-presentation TEMPLATE
+  ─────────────────────────
+  Copy this file, rename it, fill in slides, render with render-pdf.js.
+
+  • Each <section class="slide"> is one 16:9 page. Keep content inside it —
+    if a slide overflows, render-pdf.js's page-count check will FAIL.
+  • Keep the BASE CSS. Delete the example slides you don't need.
+  • Re-theme by changing --accent (and the tier colors) in :root.
+  • The CSS below is a component library: title, cards, pipeline, cascade,
+    tiers, comparison panels, gauge, checklist, table, callout. Each example
+    slide demonstrates one. Pick the visual that *is* the idea.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Presentation Template</title>
+<style>
+  :root{
+    --ink:#0f172a; --body:#334155; --muted:#64748b;
+    --accent:#4f46e5; --accent-soft:#eef2ff; --accent-line:#c7d2fe;
+    --line:#e2e8f0; --code-bg:#f1f5f9;
+    --ok:#15803d; --ok-soft:#dcfce7;
+    --red:#dc2626; --red-soft:#fee2e2;
+    --warn:#b45309; --warn-soft:#fef3c7;
+    /* tier ramp — darkest = highest rank */
+    --t1:#3730a3; --t2:#4f46e5; --t3:#6366f1; --t4:#818cf8; --t5:#c7d2fe;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{ background:#525659; }
+  body{
+    font-family:"Segoe UI",-apple-system,Helvetica,Arial,sans-serif;
+    color:var(--body);
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  @page{ size:13.333in 7.5in; margin:0; }   /* 16:9 */
+
+  /* ── slide frame ─────────────────────────────────────────────── */
+  .slide{
+    width:13.333in; height:7.5in; background:#fff;
+    padding:0.72in 0.85in 0.6in;
+    display:flex; flex-direction:column; overflow:hidden; position:relative;
+    page-break-after:always;
+  }
+  .slide:last-child{ page-break-after:auto; }
+  .kicker{
+    font-size:11px; font-weight:700; letter-spacing:0.16em;
+    text-transform:uppercase; color:var(--accent);
+    display:flex; align-items:center; gap:9px;
+  }
+  .kicker::before{ content:""; width:22px; height:3px; border-radius:2px; background:var(--accent); }
+  .headline{
+    font-size:30px; font-weight:700; color:var(--ink);
+    line-height:1.18; margin-top:13px; letter-spacing:-0.01em;
+  }
+  .subhead{ font-size:15.5px; color:var(--muted); margin-top:8px; line-height:1.45; }
+  .content{ flex:1; display:flex; flex-direction:column; justify-content:center; }
+  .pagenum{
+    position:absolute; right:0.85in; bottom:0.5in;
+    font-size:11px; color:#94a3b8; font-weight:600; letter-spacing:0.04em;
+  }
+  .docmark{
+    position:absolute; left:0.85in; bottom:0.5in;
+    font-size:11px; color:#cbd5e1; font-weight:600; letter-spacing:0.04em;
+  }
+  code{
+    font-family:"Cascadia Code","Consolas",monospace;
+    background:var(--code-bg); color:var(--accent);
+    padding:1.5px 6px; border-radius:5px; font-size:0.84em;
+  }
+  .caption{ text-align:center; font-size:13px; color:var(--muted); margin-top:14px; font-style:italic; }
+  /* callout — accented one-liner for the takeaway under a visual */
+  .note-line{
+    margin-top:16px; font-size:13.5px; color:var(--body);
+    background:var(--accent-soft); border-left:3px solid var(--accent);
+    padding:11px 15px; border-radius:0 8px 8px 0; line-height:1.5;
+  }
+  .note-line b{ color:var(--accent); }
+
+  /* ── title slide ─────────────────────────────────────────────── */
+  .title-slide{ justify-content:center; }
+  .title-slide .bar{ width:64px; height:6px; border-radius:3px; background:var(--accent); }
+  .title-main{
+    font-size:50px; font-weight:800; color:var(--ink);
+    line-height:1.1; letter-spacing:-0.02em; margin-top:24px;
+  }
+  .title-main .accent{ color:var(--accent); }
+  .title-sub{ font-size:20px; color:var(--muted); margin-top:18px; }
+  .title-meta{ margin-top:42px; display:flex; gap:14px; flex-wrap:wrap; }
+  .chip{
+    font-size:13px; font-weight:600; color:var(--body);
+    background:#f8fafc; border:1px solid var(--line);
+    padding:7px 14px; border-radius:999px;
+  }
+  .chip.solid{ background:var(--accent-soft); border-color:var(--accent-line); color:var(--accent); }
+
+  /* ── comparison cards (2–3 across) ───────────────────────────── */
+  .cards{ display:flex; gap:18px; margin-top:6px; }
+  .card{ flex:1; border:1px solid var(--line); border-radius:14px; padding:20px 20px 22px; }
+  .card.highlight{ background:var(--accent-soft); border-color:var(--accent-line); }
+  .card .num{ font-size:12px; font-weight:700; color:var(--accent); letter-spacing:0.06em; }
+  .card .ctitle{ font-size:18px; font-weight:700; color:var(--ink); margin-top:7px; }
+  .card .cbody{ font-size:13.5px; color:var(--muted); margin-top:9px; line-height:1.5; }
+
+  /* ── horizontal pipeline ─────────────────────────────────────── */
+  .pipe{ display:flex; align-items:stretch; gap:6px; margin-top:6px; }
+  .pnode{
+    flex:1; border:1.5px solid var(--line); border-radius:11px; padding:14px 11px;
+    text-align:center; background:#fff; display:flex; flex-direction:column; gap:5px;
+  }
+  .pnode.accent{ border-color:var(--accent); background:var(--accent-soft); }
+  .pnode .pn-k{ font-size:9.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); }
+  .pnode.accent .pn-k{ color:var(--accent); }
+  .pnode .pn-t{ font-size:13px; font-weight:700; color:var(--ink); }
+  .pnode .pn-d{ font-size:10.5px; color:var(--muted); line-height:1.4; }
+  .parrow{ display:flex; align-items:center; color:#cbd5e1; font-size:16px; font-weight:700; }
+
+  /* ── decision cascade (if X → outcome, else ↓) ───────────────── */
+  .cascade{ display:flex; flex-direction:column; gap:6px; margin-top:2px; }
+  .cstep{ display:flex; align-items:center; gap:14px; }
+  .ccond{ flex:1; border:1.5px solid var(--line); border-radius:10px; padding:12px 16px; font-size:14px; color:var(--ink); background:#fff; }
+  .cyes{ flex:none; width:54px; text-align:center; font-size:11px; font-weight:800; letter-spacing:0.08em; color:var(--ok); }
+  .cout{ flex:none; width:108px; text-align:center; font-size:15px; font-weight:800; color:#fff; border-radius:9px; padding:11px 0; background:var(--accent); }
+  .cfall{ font-size:10.5px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#94a3b8; padding-left:2px; }
+
+  /* ── tier ladder (ranked levels) ─────────────────────────────── */
+  .tiers{ display:flex; flex-direction:column; gap:9px; }
+  .tier{ display:flex; align-items:center; gap:16px; border:1px solid var(--line); border-left-width:5px; border-radius:11px; padding:12px 16px; }
+  .tier .tbadge{ flex:none; width:50px; height:50px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800; color:#fff; }
+  .tier .tdesc{ flex:1; font-size:13.5px; color:var(--body); line-height:1.45; }
+  .tier.r1{ border-left-color:var(--t1); } .tier.r1 .tbadge{ background:var(--t1); }
+  .tier.r2{ border-left-color:var(--t2); } .tier.r2 .tbadge{ background:var(--t2); }
+  .tier.r3{ border-left-color:var(--t3); } .tier.r3 .tbadge{ background:var(--t3); }
+
+  /* ── two-panel comparison ────────────────────────────────────── */
+  .panels{ display:flex; gap:18px; margin-top:4px; }
+  .panel{ flex:1; border:1px solid var(--line); border-radius:14px; padding:18px 20px; }
+  .panel.bad{ background:#fafafa; }
+  .panel.good{ background:var(--accent-soft); border-color:var(--accent-line); }
+  .panel .pname{ font-size:16px; font-weight:700; color:var(--ink); }
+  .panel .psub{ font-size:12.5px; color:var(--muted); margin-top:5px; line-height:1.45; }
+  .pverdict{ margin-top:12px; font-size:12.5px; font-weight:700; padding:8px 12px; border-radius:8px; }
+  .pverdict.no{ background:var(--red-soft); color:var(--red); }
+  .pverdict.yes{ background:var(--ok-soft); color:var(--ok); }
+
+  /* ── metric gauge (value vs threshold) ───────────────────────── */
+  .gauge{ position:relative; height:54px; background:#f1f5f9; border-radius:10px; border:1px solid var(--line); }
+  .gauge .fill{ position:absolute; left:0; top:0; bottom:0; background:var(--accent); border-radius:9px 0 0 9px;
+    display:flex; align-items:center; justify-content:flex-end; padding-right:12px; color:#fff; font-weight:800; font-size:16px; }
+  .gauge .gate{ position:absolute; top:-9px; bottom:-9px; width:3px; background:var(--ink); border-radius:2px; }
+  .gauge-scale{ display:flex; justify-content:space-between; margin-top:7px; font-size:10.5px; color:#94a3b8; }
+
+  /* ── checklist ───────────────────────────────────────────────── */
+  .checks{ display:flex; flex-direction:column; gap:7px; }
+  .chk{ display:flex; gap:10px; align-items:flex-start; }
+  .chk .box{ flex:none; width:18px; height:18px; border-radius:5px; margin-top:1px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#fff; }
+  .chk .box.done{ background:var(--ok); }
+  .chk .box.todo{ background:#fff; border:1.5px solid var(--line); }
+  .chk .ctext{ font-size:13.5px; color:var(--body); }
+
+  /* ── reference table (good closing slide) ────────────────────── */
+  .reftable{ width:100%; border-collapse:separate; border-spacing:0 6px; }
+  .reftable th{ font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); text-align:left; padding:0 13px 4px; }
+  .reftable td{ background:#fff; border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:11px 13px; font-size:13px; color:var(--body); }
+  .reftable td:first-child{ border-left:1px solid var(--line); border-radius:9px 0 0 9px; font-weight:700; color:var(--ink); }
+  .reftable td:last-child{ border-right:1px solid var(--line); border-radius:0 9px 9px 0; }
+
+  /* ── numbered list (asks / next steps) ───────────────────────── */
+  .lands{ display:flex; flex-direction:column; gap:10px; }
+  .land{ display:flex; gap:15px; align-items:center; border:1px solid var(--line); border-radius:11px; padding:13px 18px; }
+  .land .lnum{ flex:none; width:30px; height:30px; border-radius:50%; background:var(--accent); color:#fff; font-weight:800; font-size:14px; display:flex; align-items:center; justify-content:center; }
+  .land .ltxt{ font-size:14px; color:var(--body); line-height:1.4; }
+  .land .ltxt b{ color:var(--ink); }
+</style>
+</head>
+<body>
+
+<!-- ════ SLIDE 1 — TITLE ════ -->
+<section class="slide title-slide">
+  <div class="bar"></div>
+  <div class="title-main">Deck Title <span class="accent">Here</span></div>
+  <div class="title-sub">One-line subtitle — what the reader will be able to think about after this</div>
+  <div class="title-meta">
+    <span class="chip solid">Primary tag</span>
+    <span class="chip">Context</span>
+    <span class="chip">Scope / key fact</span>
+  </div>
+  <div class="docmark">Org · internal</div>
+</section>
+
+<!-- ════ SLIDE 2 — COMPARISON CARDS ════ -->
+<section class="slide">
+  <div class="kicker">Section label</div>
+  <div class="headline">A headline that states a claim, not a topic</div>
+  <div class="subhead">One sentence that frames what the visual below shows.</div>
+  <div class="content">
+    <div class="cards">
+      <div class="card">
+        <div class="num">OPTION 01</div>
+        <div class="ctitle">First thing</div>
+        <div class="cbody">What it is and what it is good for. Keep it to two short sentences.</div>
+      </div>
+      <div class="card">
+        <div class="num">OPTION 02</div>
+        <div class="ctitle">Second thing</div>
+        <div class="cbody">What it is and what it is good for.</div>
+      </div>
+      <div class="card highlight">
+        <div class="num">OPTION 03</div>
+        <div class="ctitle">The highlighted one</div>
+        <div class="cbody">Use <code>.highlight</code> to mark the recommended or chosen option.</div>
+      </div>
+    </div>
+    <div class="note-line"><b>Takeaway:</b> the one sentence the reader should leave this slide holding.</div>
+  </div>
+  <div class="pagenum">02</div>
+</section>
+
+<!-- ════ SLIDE 3 — HORIZONTAL PIPELINE ════ -->
+<section class="slide">
+  <div class="kicker">How it works</div>
+  <div class="headline">Use a pipeline when the idea is "A leads to B leads to C"</div>
+  <div class="subhead">Stages left to right; mark the final/important node with <code>.accent</code>.</div>
+  <div class="content">
+    <div class="pipe">
+      <div class="pnode"><div class="pn-k">Stage</div><div class="pn-t">Input</div><div class="pn-d">Where it starts.</div></div>
+      <div class="parrow">&rarr;</div>
+      <div class="pnode"><div class="pn-k">Stage</div><div class="pn-t">Transform</div><div class="pn-d">What happens.</div></div>
+      <div class="parrow">&rarr;</div>
+      <div class="pnode"><div class="pn-k">Stage</div><div class="pn-t">Check</div><div class="pn-d">The gate.</div></div>
+      <div class="parrow">&rarr;</div>
+      <div class="pnode accent"><div class="pn-k">Result</div><div class="pn-t">Output</div><div class="pn-d">What lands.</div></div>
+    </div>
+    <div class="note-line">A pipeline reads as causation — only use it when each node truly produces the next.</div>
+  </div>
+  <div class="pagenum">03</div>
+</section>
+
+<!-- ════ SLIDE 4 — DECISION CASCADE ════ -->
+<section class="slide">
+  <div class="kicker">Resolution logic</div>
+  <div class="headline">Use a cascade for precedence — first match wins</div>
+  <div class="subhead">Good for role resolution, routing, fallback chains.</div>
+  <div class="content">
+    <div class="cascade">
+      <div class="cstep"><div class="ccond">condition A holds?</div><div class="cyes">YES &rarr;</div><div class="cout">Outcome A</div></div>
+      <div class="cfall">&darr; otherwise</div>
+      <div class="cstep"><div class="ccond">condition B holds?</div><div class="cyes">YES &rarr;</div><div class="cout">Outcome B</div></div>
+      <div class="cfall">&darr; otherwise (default)</div>
+      <div class="cstep"><div class="ccond">everything else</div><div class="cyes">&rarr;</div><div class="cout">Default</div></div>
+    </div>
+    <div class="note-line">Name the default explicitly — a cascade with an unstated fall-through hides a case.</div>
+  </div>
+  <div class="pagenum">04</div>
+</section>
+
+<!-- ════ SLIDE 5 — TWO-PANEL COMPARISON ════ -->
+<section class="slide">
+  <div class="kicker">Why this, not that</div>
+  <div class="headline">Two panels for a good-vs-bad or before-vs-after split</div>
+  <div class="subhead">The contrast is the lesson — make both panels concrete.</div>
+  <div class="content">
+    <div class="panels">
+      <div class="panel bad">
+        <div class="pname">The rejected / old way</div>
+        <div class="psub">What it is, and the specific reason it falls short.</div>
+        <div class="pverdict no">&#10007;&nbsp; why it does not work</div>
+      </div>
+      <div class="panel good">
+        <div class="pname">The chosen / new way</div>
+        <div class="psub">What it is, and the specific reason it wins.</div>
+        <div class="pverdict yes">&#10003;&nbsp; why it works</div>
+      </div>
+    </div>
+    <div class="note-line"><b>The lesson:</b> state the general principle the contrast illustrates.</div>
+  </div>
+  <div class="pagenum">05</div>
+</section>
+
+<!-- ════ SLIDE 6 — METRIC GAUGE ════ -->
+<section class="slide">
+  <div class="kicker">The number that matters</div>
+  <div class="headline">A gauge shows a value against a threshold</div>
+  <div class="subhead">For scores, budgets, gates. Set <code>.fill</code> width to the value, <code>.gate</code> left to the threshold.</div>
+  <div class="content">
+    <div class="gauge">
+      <div class="fill" style="width:44%;">0.44</div>
+      <div class="gate" style="left:90%;"></div>
+    </div>
+    <div class="gauge-scale"><span>0.0</span><span>metric name &mdash; gate at 0.90</span><span>1.0</span></div>
+    <div class="note-line">Pair the gauge with one sentence on what crossing (or missing) the gate means.</div>
+  </div>
+  <div class="pagenum">06</div>
+</section>
+
+<!-- ════ SLIDE 7 — CLOSING: NUMBERED ASKS ════ -->
+<section class="slide">
+  <div class="kicker">Synthesis</div>
+  <div class="headline">Close with what's next — or what the reader should do</div>
+  <div class="content">
+    <div class="lands">
+      <div class="land"><div class="lnum">1</div><div class="ltxt">First concrete next step or takeaway.</div></div>
+      <div class="land"><div class="lnum">2</div><div class="ltxt">Second.</div></div>
+      <div class="land"><div class="lnum">3</div><div class="ltxt">Third.</div></div>
+    </div>
+    <div class="caption">A closing slide should leave the reader with action or synthesis — never trail off.</div>
+  </div>
+  <div class="pagenum">07</div>
+</section>
+
+</body>
+</html>
