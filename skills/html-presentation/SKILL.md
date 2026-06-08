@@ -2,9 +2,8 @@
 name: html-presentation
 description: >-
   Generate a didactic slide-deck HTML file for epistemic priming on a topic,
-  PR, feature, subsystem, or decision. Builds a clean 16:9 dark-theme deck with
-  CSS-drawn visuals — opening on a whole-system architecture slide, then
-  zooming in — and stops at the HTML, no PDF render. Use when the user says
+  PR, feature, subsystem, or decision. Builds a clean 16:9 deck with CSS-drawn
+  visuals — stops at the HTML, no PDF render. Use when the user says
   "/html-presentation", asks for an HTML deck specifically, wants to iterate
   on the source before rendering, or is in an environment with no browser to
   render with. For a rendered PDF instead, use the sibling skill
@@ -42,139 +41,131 @@ is — chronological, exhaustive, every file and field present. A presentation i
 **selective and conceptual**: it teaches the ideas in the order a mind needs
 them. If the user wants a faithful capture, that is a different artifact.
 
-## Doctrine
+## Six principles
 
-1. **Overview-first structure.** After the title, **slide 2 is a whole-system
-   architecture diagram** — the map of the subject — *before* zooming into
-   parts. It orients the reader and gives narrative continuity across a series
-   of related decks. Render it as a top-to-bottom **banded** diagram (the
-   `.arch` family): a gate/trigger strip, ingestion/upstream bands rendered
-   quietly, the **deck's own subject as the accented hero band**, downstream /
-   already-shipped stages in a quiet green `.shipped` treatment, and a closing
-   `.arch-parity` thesis bar. Spotlight the subject; everything else is context.
-2. **Concept-dependency order.** Sequence slides so each one only uses ideas
+1. **Concept-dependency order.** Sequence slides so each one only uses ideas
    already taught. You cannot explain "red by design" before "precision";
    you cannot explain precision before "what a boundary is." Outline the
    dependency graph first, then walk it.
-3. **Selective, not exhaustive.** Include what teaches; cut what merely
+2. **Selective, not exhaustive.** Include what teaches; cut what merely
    records. A 15-file diff table teaches nothing; a diagram of the one tricky
    mechanism teaches a lot.
-4. **Lean — structure carries the idea; words only label.** The
-   structure / sequence / representation of a visual *is* the argument; text
-   only labels it. Headlines are **assertions** (a claim), not labels ("The
-   eval fails today — on purpose", not "Test results"). **Cut the subhead**
-   when the headline + visual already deliver the point — keep one only when it
-   carries unique load the visual can't. Tighten every `.note-line` callout to
-   a **single punch**: one crisp insight, no padding, never a restatement of
-   the headline.
-5. **Visuals do the work.** Every non-trivial idea gets a CSS-drawn visual from
-   the pattern library — a comparison, a flow, a cascade, a gauge. Bullet lists
-   are the fallback, not the default.
-6. **No broken/undefined CSS.** Every class used in the markup must be defined
-   in the stylesheet. Never ship a slide that renders as unstyled divs — check
-   this explicitly before finishing. This is a real failure mode that has
-   happened.
-7. **Spacing discipline.** Slides are 13.333in × 7.5in; `.slide` padding is
-   `0.72in 0.85in 0.85in`; `.content` centers with `padding-top:8px`. Equal-
-   height columns come from flex (`.colcard{flex:1}`, `.two-col{align-items:
-   stretch}`), **not** `height:100%`. The footer (`.docmark` / `.pagenum`) sits
-   at `bottom:0.5in` — keep content clear of it. Nothing may clip top/bottom or
-   overflow horizontally. A dense slide (e.g. the architecture slide) may carry
-   the scoped `.arch-slide` density class.
-8. **grid-bg rhythm.** Even page numbers carry `grid-bg`; odd are plain; the
-   title is the title-slide. Keep the alternation consistent so the striping
-   reads as intentional.
-9. **Ground every claim.** Never invent. If it is a PR, `gh pr view`. If it is
+3. **Visuals do the work.** Every non-trivial idea gets a CSS-drawn visual — a
+   comparison, a flow, a cascade, a gauge. Bullet lists are the fallback, not
+   the default.
+4. **Ground every claim.** Never invent. If it is a PR, `gh pr view`. If it is
    code, read the code. If it is a number, verify it. A priming deck that is
    confidently wrong is worse than none.
+5. **One idea per slide.** A headline states a *claim*, not a label
+   ("The eval fails today — on purpose", not "Test results").
+6. **Friction before the reveal.** Don't let a fluent, perfectly-ordered deck
+   become a substitute for the reader's own thinking. Once per deck, at a
+   conceptual *why*-juncture, pose a question on one slide and resolve it on the
+   next (a pause-and-predict / why-doesn't-the-obvious-approach-work beat), then
+   consolidate the confusion explicitly. One such beat, not many. A slick
+   walkthrough produces "I followed that," not "I learned that."
+
+## House style — default for this user's technical / PR decks
+
+For a **technical** deck (a PR, subsystem, architecture, or engineering decision), do NOT start from the generic `template.html`. Default to the user's **"Twilight"** house template + recipe below. (For non-technical / pitch / general-audience decks, Twilight does NOT apply — keep the per-deck style, e.g. the Spanish pitch decks.) The **fluid** rule at the bottom applies to ALL browser-viewed decks regardless of theme.
+
+**Base template:** `%USERPROFILE%/Documents/Code/presentations/styles/twilight-tailwind.html` — the fluid-native, Tailwind-Play-CDN port; DEFAULT for new technical decks. Copy it and fill in slides. (The vanilla `twilight-template.html` + `twilight.css` is the offline-safe fallback — Tailwind Play CDN needs network.)
+- **Authoring conveniences (use them):** page numbers + docmark are AUTOMATIC (CSS counters) — don't hand-number slides or add `.pagenum`/`.docmark` elements; just order the slides and set `--docmark` once. Fluid type via Tailwind `fontSize` tokens — use `text-headline`/`text-kicker`/… utilities, no hand-written `clamp()`. An in-file `=== TWILIGHT COMPONENT CHEAT-SHEET ===` comment gives minimal markup per component. Run `node presentations/styles/check-deck.js <deck.html>` to catch overflowing slides (exit 1 if any; `?debug` red-outlines them in-browser). Tailwind utilities are available for ad-hoc layout. When a slide risks overflow, **don't hand-tune coordinates or scale — pick a different archetype/component from the library and let `check-deck.js` verify fit**; render 2–3 variants (font size, column split) and keep the one that passes rather than nudging geometry by eye.
+- **Palette (dark "Twilight"):** `--bg-page:#0a0a0f`, `--accent:#FF4018` / `--accent-deep:#FF5D3B`, ink `#ffffff`, body `#cbd5e1`; semantic `--ok:#4ade80` (shipped/green), `--indigo:#a5b4fc` (deterministic), `--warn`/`--red`. White-on-dark, orange accent. Font: **Manrope** (Google-Fonts link in the template — keep it; it's the only external resource).
+- **Components:** banded-hero `.arch` (`.arch-band`/`.arch-band.shipped`/`.arch-hero`/`.arch-gate`/`.arch-parity`/`.arch-down`), maturity-colored `.pipe` (`.pnode.accent/.deterministic/.shipped`), `.cards`, `.panels` (`.panel.bad/.good`/`.pverdict`), `.two-col`/`.colcard`, `.sigs`, `.codepanel`, `.bbox-flow`, `.gauge-wrap`, `.reftable` + `.badge.ok/now/next/pending`, `.lands`, `.note-line`, `.kicker/.headline/.subhead`, `.docmark/.pagenum`.
+
+**Single-PR / subsystem deck recipe (~11–12 slides):**
+1. **Title** (`.title-slide` orbs/bar/chips) — top-corner `repo · PR #NNNN`; status chips (branch · "ships dark"/"behind flag" · commits/tests/review).
+2. **"The whole system" — ALWAYS slide 2:** a banded-hero `.arch` showing where this work sits, THIS PR's scope as the `.arch-hero` (accent), downstream/shipped bands neutral/green. *Map before the trail.*
+3–4. The problem / why it exists (often before→after `.panels`), then the concept.
+5–9. Mechanism / contract (`.sigs`/`.bbox-flow`/`.codepanel`), then deep-dives & invariants clustered.
+10. Validation (tests / eval / review status) where applicable.
+11. **Always end on a dedicated closing slide that LANDS** — the impact / the payoff / the bigger story / an open question that energizes the audience and makes them curious. NEVER end on operative details (next-steps checklists, merge plans, ops, config), a detail/reference slide, or implementation minutiae. End on why-it-matters + a hook, not a to-do list.
+
+**Voice:** affirmative constraint headlines — state the invariant as fact ("Status is truth — read `grounding_status`", "Flag, don't gate"), NOT negations or hedging. Dense, authoritative; inline code / type names / spec refs — but keep it authoritative and **warm it ~half a notch**: human and readable, not clipped or stiff. Color-code by maturity (shipped=green, this-work=orange, deterministic=indigo). Channel that warmth onto the **one element that matters** — color/emphasize the core mechanism or key term on a slide; don't wash the whole slide in accent. Warming the whole interface lifts mood but distracts from learning (Zhao & Mayer 2025). And only lead with a **myth-vs-fact / wrong-idea panel when you're confident the audience holds the misconception** — for mixed/unknown audiences state the correct mechanism affirmatively and skip the myth; naming a false idea to someone who never held it makes it feel familiar and thus more credible (2026 Ed Psych Review). Both reinforce the affirmative house voice.
+**Altitude:** keep every slide at concept/operational altitude — no slide (the closer least of all) should be a dump of implementation minutiae (env-var tables, config field names, internal function/file names). State the takeaway; cite specifics only when they teach.
+
+**Fluid (browser-viewed) — the base is already fluid-native, so don't break it:** the Tailwind base ships fluid text (`fontSize` tokens), wrapping component rows, and full-bleed slides — you no longer hand-apply a fluid pass. Just don't break it: NO `zoom` / `transform:scale`. The `@media print` 16:9 restore (`.slide{ width:13.333in; height:7.5in; min-height:0; overflow:hidden; page-break-after:always } @page{ size:13.333in 7.5in }`) is already in the base. CDNs are fine (Tailwind, fonts, icon/CSS libs) — they render in-browser through AVG; the only tradeoff is offline viewing (and a PDF render needs the resource reachable). Self-contained native CSS is optional, not required. (See memories `feedback_deck_fluid_not_pdf` + `feedback_deck_house_style`.)
+
+**Canonical example built this way:** `presentations/check-grounding-1106-deck.html`.
 
 ## Process
 
 1. **Gather & verify** the source material. Fetch / read / confirm.
 2. **Outline** 8–12 slides in concept-dependency order. Slide 1 is the title;
-   **slide 2 is the whole-system architecture overview** (banded `.arch`);
    the final slide is synthesis / what's next. Write each slide's headline as
    a one-sentence claim before building anything.
 3. **Pick a visual per slide** from the pattern library below.
 4. **Build** — copy `template.html` from this skill's directory; fill in slides.
-5. **Verify** — see "Verifying without a PDF" below. At minimum confirm every
-   class used is defined in the CSS and no slide overflows its 7.5in height.
+5. **Sanity-check the HTML** — open it in a browser, count slides, verify no
+   slide overflows its 7.5in height (a visible scrollbar inside a `.slide` is
+   the symptom). There is no automated verification step; this is on you.
 6. **Save** the `.html` file to the output directory (below).
 
 ## Slide anatomy
 
 Each slide: **kicker** (small section label) → **headline** (the claim) →
-*(optional)* **subhead** → **content** (the visual) → page number. One fixed-
-height `.slide` per slide; never let content overflow.
+**subhead** (one clarifying sentence) → **content** (the visual) → page number.
+One fixed-height `.slide` per slide; never let content overflow.
 
-The **subhead is optional** — cut it whenever the headline plus the visual
-already carry the point. Keep one only when it carries load the visual can't.
+A **curiosity-gap opener** (a "how much you already know" gauge, an open
+question, the slide-2 system map framed as "here's what you don't yet see") only
+converts to retained understanding if the **very next beat answers why this
+matters to the reader**. Pair every gap with a stakes/utility hook; never leave
+the gap dangling (2026 J. Cognition).
 
 ## Visual pattern library
 
 All of these are in `template.html` with CSS + a worked example:
 
-- **Banded architecture (`.arch`)** — the whole-system overview, a top-to-
-  bottom stack of bands: gate strip, quiet upstream/shipped bands, one accented
-  **hero** band (the subject), a downstream sink, and an `.arch-parity` thesis
-  bar. **This is the slide-2 convention** — the map before the parts.
 - **Title** — deck name, one-line subtitle, 2–3 context chips.
 - **Comparison cards** — 2–3 side-by-side options/things, one judged/highlighted.
 - **Horizontal pipeline** — stages connected by arrows; for processes/flows.
 - **Decision cascade** — vertical "if X → outcome, else ↓" ladder; for precedence/resolution logic.
 - **Tier ladder** — ranked levels, colored by rank; for hierarchies.
-- **Two-panel comparison** — a good-vs-bad / before-vs-after split, with a `.pverdict`.
-- **Black-box contract** — in → core → out, for a function/subsystem boundary.
+- **Two-panel comparison** — a good-vs-bad / before-vs-after split.
 - **Metric gauge** — a value against a threshold; for scores, budgets, gates.
 - **Checklist** — done/pending items; for test plans, status.
 - **Annotated strip / row** — a sequence of cells with markers; for pages, steps, timelines.
 - **Reference table** — a compact recap grid; good as a closing slide.
-- **Callout / note-line** — an accented **single-punch** one-liner under a visual.
+- **Callout / note-line** — an accented one-liner for the takeaway under a visual.
 
 Choose the visual that *is* the idea. If a slide's idea is "two things differ,"
-that is a comparison; if it is "A leads to B leads to C," that is a pipeline;
-if it is "here is the whole system," that is the banded architecture.
+that is a comparison; if it is "A leads to B leads to C," that is a pipeline.
 
 ## Build
 
 Copy `template.html` from this skill's directory into a working `.html` file.
-It is **self-contained** — the full twilight stylesheet is inlined in a
-`<style>` block, so the deck renders anywhere with no external assets. Keep
-that inlined CSS; do **not** relink to an external file. Delete example slides
-you do not need; one `<section class="slide">` per slide. Slides are
-13.333in × 7.5in (16:9).
+It carries the full CSS component library and a worked example of every
+pattern. Keep the base CSS; delete example slides you do not need; one
+`<section class="slide">` per slide. Slides are 13.333in × 7.5in (16:9).
 
-Style: the default theme is **twilight (dark)** — a near-black page, white ink,
-and a single warm accent. Re-theme by editing the `--accent` var (and the rest
-of the token block) in `:root`. Generous whitespace. No clip-art, no stock
+Style: clean and minimal. One accent color (indigo by default — change the
+`--accent` CSS var to re-theme). Generous whitespace. No clip-art, no stock
 icons, no decorative gradients. Every pixel of a visual should carry meaning.
 
-Before finishing, **confirm every class in the markup is defined in the CSS** —
-a slide that renders as unstyled divs is a hard failure.
+**Decoration is audience-conditioned, not banned.** For a captive/obligated
+audience (a mandatory review deck) strip decorative motion ruthlessly —
+removing seductive detail is the single highest-yield quality edit (2025
+re-analysis of Mayer's own corpus). For a self-selected curious reader a little
+delightful motion is low-risk and may raise interest. Tune density to who's
+watching.
 
-## Verifying without a PDF
+## No render step
 
 `/pdf-presentation` ends with a headless-browser render and a page-count
-correctness check. This skill stops at the HTML — but you should still verify.
-The strongest check is to **render through `/pdf-presentation`'s `render-pdf.js`**
-and look at the pages:
+correctness check. This skill deliberately does not. If you want that
+verification — and the safety it provides against a slide silently overflowing
+onto a second printed page — render the HTML through `/pdf-presentation`'s
+`render-pdf.js` afterward, or switch to `/pdf-presentation` from the start.
 
-```
-node "<pdf-presentation-skill-dir>/render-pdf.js" <input.html> <out.pdf> <slideCount>
-```
-
-The page count must equal the slide count (the overflow check); then convert a
-couple of pages to images and confirm the twilight theme renders (dark, styled,
-not unstyled divs) and nothing clips. **Delete the temp PDF/PNGs afterward** —
-they are not deliverables of this skill.
-
-If a browser is genuinely unavailable, opening the `.html` in any browser is a
-sufficient visual check; the only failure mode it misses is the print-paginate
-edge case, which only matters once the deck is printed or PDF-rendered.
+Opening the file in a browser is a sufficient visual check; the only
+failure mode it does not catch is the print-paginate edge case, which only
+matters if the deck will eventually be printed or PDF-rendered.
 
 ## Output location
 
-Save the `.html` to **`%USERPROFILE%\Documents\Code\presentations\`** (the
+Save the `.html` to **`%USERPROFILE%/Documents/Code/presentations/`** (the
 default cross-project decks directory) unless the user explicitly asks for a
 different location. Create the directory if missing. `ls` it first — if a deck
 with the same slug already exists, the user almost certainly wants an edit,
