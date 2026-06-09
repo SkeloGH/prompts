@@ -58,7 +58,7 @@ article / URL; for a Mode-2 narr8 deck, the original page) to fact-check against
 If no source is recoverable, mark Content-Fidelity items **unverifiable** and cap
 that dimension at 2 — don't bluff a 3.
 
-## The rubric — nine anchored dimensions (0–3)
+## The rubric — ten anchored dimensions (0–3)
 
 Skip N/A dimensions (e.g. Narration for a static deck) and say they were skipped.
 **Hard gate: Content Fidelity < 2 caps the overall verdict at REGEN**, no matter
@@ -165,6 +165,27 @@ extends answerability (#24) from the captive reader to the skimmer and the
 two-years-later reader, pairs with one-insight-per-beat (#11). A per-number
 fact-check passes a true number in a false frame; this dimension catches it.)*
 
+**10 · Cross-Channel Complementarity & Engagement** *(narr8 / narrated artifacts
+only)* — when a voice track plays over on-screen text, the voice must **add to** the
+screen, not read it. Per-beat binary (like dim 1): each `speak` line carries at least
+one idea **not printed on that slide** (a *why* / stake / consequence / human aside)
+and does **not** restate its kicker / headline / subhead / note / labels. Plus: the
+**opening beat states the stakes or tension** (not a title or greeting), and a
+**consistent second-person persona** holds across the run (no lapse into impersonal
+exposition for more than ~2 beats).
+`3` every beat complements the screen, stakes-first hook, persona consistent · `2`
+mostly — 1–2 beats restate on-screen text, or the hook/persona is soft · `1` several
+beats read the slide (voice duplicates the printed headline/note), **or** no real
+hook, **or** persona absent through the middle · `0` the voice reads the slides
+throughout. **N/A** for static HTML/PDF/MD decks (no second channel). Scored on the
+YAML+script at **Gate A** — it needs no pixels.
+*(Redundancy principle — verbatim narration of on-screen text feels engaging yet
+lowers learning: Schmidt 2025 / Mayer PMC4088922; personalization & persona — Couch &
+Mayer 2025 meta-analysis g≈0.37; stakes-first hook & retention — 2025 watch-through
+analytics. Second reviewer-dogfood-sourced dimension, from the Wrapped-deck
+engagement pass, 2026; extends dim 7's "not read-aloud bullets" from register to
+content.)*
+
 ## Procedure
 
 1. **Detect the artifact type and read it** (table above). Build the
@@ -178,20 +199,46 @@ fact-check passes a true number in a false frame; this dimension catches it.)*
    dimensions 6 and 7 **without a model call**.
 4. **Build the per-item binary checklist grounded in the source** — one yes/no
    item per factual claim/number (dim 1), bucketed items for Structure (3),
-   Friction (4), Decoration (5), Legibility & Framing (9). Grade each item in its
+   Friction (4), Decoration (5), Legibility & Framing (9), Complementarity (10). Grade each item in its
    **own focused model call** — never a single holistic score.
 5. **Run the answerability probe** (dim 2): auto-generate retrieval questions + a
    transfer probe; a separate "student" pass answers from **artifact content
    only**; score by how many transfer; split failures into clarity vs faithfulness.
 6. **For narrated / multi-shot artifacts**, run the Experience-Arc pass (dim 8)
    over the whole run; confirm any interactive/embodied moment is content-relevant.
-7. **Roll item results into the nine anchored 0–3 scores.** Apply the hard gate
+7. **Roll item results into the ten anchored 0–3 scores.** Apply the hard gate
    (Fidelity < 2 → REGEN). Mark N/A dimensions skipped.
 8. **Run the Register & Cadence advisory** (see below) — **default-on for any
    static deck** (where Dim 7 is N/A), and also whenever the artifact is prose-heavy
    or requested. Unscored: it never folds into the 0–3 scores or the verdict.
 9. **Emit the scorecard + verdict** and, for narr8, map to a batch disposition
    (`ready | regen | flagged`) so it plugs into `pipeline/batch`.
+
+## Two-gate order for expensive renders (narr8 video)
+
+A narr8 render costs minutes; most of the rubric never needs pixels. So for any
+artifact that will be rendered (a narr8 deck YAML → MP4), split the evaluation by
+render cost and **gate before you spend the render** — shift the cheap checks left:
+
+- **Gate A — spec-check (pre-render, on the deck YAML + narration script).** Run the
+  render-independent dims now: **Dim 1 Fidelity** (owns the REGEN gate — a wrong
+  number kills the render *before* it runs), **Dim 2 Answerability, Dim 3 Structure,
+  Dim 4 Friction, Dim 9 Legibility & Framing** (text-level: naked codes, number
+  legends, true-number-false-frame), **Dim 10 Complementarity** (does the voice add to
+  the screen or just read it — pair each narration beat against the slide's text), the
+  **`caption == speak.text` diff**, and the **Register & Cadence advisory**. Fix everything fixable here. WPM is an *estimate*
+  at this stage (words ÷ target duration). Verdict gates the render: Fidelity < 2 →
+  REGEN the script, don't render.
+- **Gate B — render-check (post-render, on the MP4).** Run only what needs
+  pixels/audio/timing: **Dim 6 mechanical** (overflow / mis-scroll / letterbox /
+  WCAG on real frames — extract one keyframe per slide), **Dim 5 rendered
+  decoration, Dim 7 exact pacing & caption-sync, Dim 8 end-to-end arc**, the **T1
+  keyframe-legibility judge**, and a **captions-off burn check** (no stray karaoke).
+
+Gate A is seconds and catches wrong numbers, dead framing, and a weak script before a
+multi-minute render; Gate B confirms the pixels Gate A can't see — does a dense slide
+actually fit, did captions-off hold, no letterbox. For a cheap render (HTML→PDF) the
+split is optional; run it inline. For narr8 video it is the default order.
 
 ## Output format
 
@@ -215,7 +262,7 @@ Never return prose praise without the scorecard, and **never a bare single numbe
 
 ## Register & Cadence (advisory — unscored, default-on for static decks)
 
-The nine dimensions grade whether a deck is *true, teaches, and is well-built* —
+The ten dimensions grade whether a deck is *true, teaches, and is well-built* —
 not whether the *prose* is good. For a **static** deck (where Dim 7 is N/A) that
 leaves voice, register, and cadence ungraded — so for any static deck this pass
 runs **by default** (also whenever the artifact is prose-heavy or the user asks).
@@ -242,13 +289,14 @@ the grounded objectivity of the score stays uncontaminated. Reserve a real
   `T1`'s Ollama keyframe judge) — it adds no code. It is a judgment layer, not a
   pipeline change.
 - The grounding for every rubric dimension is web-sourced 2024–2026 research, not
-  generic advice — see the parenthetical citations per dimension. The full
-  25-principle library with every source URL is in
-  `references/explanation-design-principles.md` next to this file. **The exception
-  is Dimension 9**, surfaced by human-reviewer dogfooding (2026): it catches
-  skim-illegible headlines, mechanics-only notes, unlabeled numbers, and the
-  *true-number-false-frame* — failure modes the per-number fact-check (dim 1) and
-  the captive-reader probe (dim 2) structurally miss.
+  generic advice — see the parenthetical citations per dimension. The full library —
+  25 comprehension principles plus a 7-item engagement addendum — with every source
+  URL is in `references/explanation-design-principles.md` next to this file. **The
+  exceptions are Dimensions 9 and 10**, surfaced by human-reviewer dogfooding (2026):
+  Dim 9 catches skim-illegible headlines, mechanics-only notes, unlabeled numbers, and
+  the *true-number-false-frame*; Dim 10 catches a voice track that *reads the slide*
+  instead of complementing it (the redundancy principle) — failure modes the
+  per-number fact-check (dim 1) and the captive-reader probe (dim 2) structurally miss.
 - When a dimension is N/A (a static deck has no narration), say so explicitly and
   average over the applicable dimensions only — don't penalize for an absent
   channel.

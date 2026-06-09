@@ -269,3 +269,59 @@ integration), not generic "engagement" wiggle. XEQ scale 2024; Zou et al., Natur
 Human Behaviour 2025.
 - https://arxiv.org/abs/2407.10662
 - https://www.nature.com/articles/s41562-025-02152-2
+
+---
+
+## Engagement addendum (narrated artifacts) — 7 principles
+
+Added 2026 from a focused engagement-delta research pass (web-sourced, adversarially
+verified) after the Wrapped-deck dogfood showed the comprehension library missed the
+*engagement/retention* axis. These govern whether a viewer keeps watching and feels
+addressed — distinct from whether they could learn. The load-bearing one is **E1**
+(it became scored **Dimension 10**); E2/E3 are folded into Dim 10's hook + persona
+sub-checks; E4–E7 inform Dim 8 (experience arc).
+
+### E1. Complementary narration beats verbatim duplication (the redundancy principle)
+Narration that says something the slide doesn't show outperforms narration that reads
+the on-screen text — and learners *rate* verbatim-redundant decks as more engaging
+while learning less (the trap that keeps the defect alive). **Binary:** every `speak`
+beat adds ≥1 idea not printed on that slide AND doesn't re-voice its words; fail the
+artifact if >~20% of beats echo. **Scored as Dimension 10.** Sharpens #1/#18.
+- Schmidt et al. 2025, Frontiers in Psychology — https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2025.1718397/full
+- "Learners misperceive the benefit of redundant text" — https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4088922/
+
+### E2. Direct second-person address + a consistent persona (personalization principle)
+Conversational, second-person, stable-persona narration lifts engagement and transfer
+over formal third-person. **Binary:** second-person ≥ once per ~3 beats, no impersonal
+stretch > ~2 beats. **Folded into Dim 10 (persona).** Sharpens #16.
+- Couch & Mayer 2025 meta-analysis (181 studies, g=0.37; personalization among largest) — https://www.sciencedirect.com/science/article/pii/S1747938X25000673
+
+### E3. Stakes-first opening hook (not a greeting/agenda)
+Watch-through is decided in the first seconds; an opening that states value/tension
+retains far more than a generic intro (~47% higher avg view duration). **Binary:** beat
+1 names the payoff/tension, concretely. **Folded into Dim 10 (hook).** NEW.
+- 2025 retention analytics — https://www.retentionrabbit.com/blog/2025-youtube-audience-retention-benchmark-report
+
+### E4. Sustain the retention curve — re-engage at the mid-late sag (~60%)
+Multi-beat explainers lose a secondary ~15% around 55–65% without a re-engagement beat
+(a posed question, a stakes reminder, a payoff). **Binary:** an explicit re-engagement
+beat in the back third. Informs Dim 8. NEW.
+- https://www.retentionrabbit.com/blog/ultimate-guide-youtube-audience-retention
+
+### E5. Vary sentence/beat length — uniform cadence is tuned out *(weakest evidence — craft tier)*
+Predictable rhythm → disengagement; vary beat length (a short punch after long beats).
+**Binary:** non-trivial spread in beat word-counts (≥1 short <6-word and ≥1 long >20-word).
+Soft sub-check only. Informs Dim 8.
+- Craft sources (no controlled study found): https://rivereditor.com/guides/how-to-vary-sentence-structure-control-reading-rhythm-2026
+
+### E6. Carry one long-arc open loop, resolved late
+Sustained attention comes from a curiosity/suspense gap held open across beats and
+resolved near the end (distinct from #9's immediate gap→stakes). **Binary:** a posed
+unknown in the first third unresolved until the final third (≥3-beat span). Informs Dim 8.
+- Narrative-tension theory (suspense/surprise/curiosity) — https://www.sciencedirect.com/science/article/pii/S0304422X22000262
+
+### E7. Make the tease concrete, not vague
+A curiosity gap drives engagement only when the tease names a concrete specific; vague
+"you won't believe…" gaps underperform. **Binary:** any teaser beat names a concrete
+specific (a number, named thing, definite outcome). Bounds #9. NEW.
+- Lin et al. 2024, Scientific Reports (Nature) — https://www.nature.com/articles/s41598-024-81575-9
