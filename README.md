@@ -39,6 +39,11 @@ are parameterized to `%USERPROFILE%`.
 | [factory-factory](skills/factory-factory/) | Autonomous spec→implement→review→PR pipeline (FF) |
 | [x-workflow](skills/x-workflow/SKILL.md) | Discovery / hypothesis / validation workflow |
 
+### Content & marketing
+| Skill | Description |
+|-------|-------------|
+| [contagious](skills/contagious/SKILL.md) | STEPPS word-of-mouth audit → concrete fixes for copy/ideas (Jonah Berger) |
+
 > `skills/archived/` holds the older `SKILL.md`-per-dir form of the FF skills.
 
 ## Commands
