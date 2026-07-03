@@ -43,6 +43,7 @@ are parameterized to `%USERPROFILE%`.
 | Skill | Description |
 |-------|-------------|
 | [contagious](skills/contagious/SKILL.md) | STEPPS word-of-mouth audit → concrete fixes for copy/ideas (Jonah Berger) |
+| [distill](skills/distill/SKILL.md) | Cut dense/technical content to clear, scannable, act-on-able text — 12-rule clarity checklist (transform + self-check) |
 
 > `skills/archived/` holds the older `SKILL.md`-per-dir form of the FF skills.
 
